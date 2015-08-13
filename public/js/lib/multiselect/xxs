@@ -1,0 +1,54 @@
+
+               getSMK = function (id) {
+                   apiService.getCorpusArtworkById(id)
+                   .success(function (resp) {
+                       scope.loading = false; /*hide spinner*/
+                       scope.resultText = "";
+                       var artwork = {};
+                       var solrResp = resp.response;
+                       if (solrResp.numFound === 1){ /*there can be only one*/
+                           var doc = solrResp.docs[0];
+                           artwork.corpusId = doc.csid;
+                           artwork.externalurl = doc.externalurl;
+                           artwork.inventoryNum = doc.id_s;
+                           artwork.title = doc.title_first;
+                           var earliest = new Date(doc.object_production_date_earliest);
+
+                           artwork.productionDateEarliest = (doc.object_production_date_earliest) ?
+                                                          doc.object_production_date_earliest.substring(0,10) : ""; /*date only*/
+                           artwork.productionDateLatest = (doc.object_production_date_latest) ?
+                                                           doc.object_production_date_latest.substring(0,10) : "";
+                           artwork.artist = doc.artists_data.replace(/;-;/g,', ');
+                           artwork.dimensions = doc.dimension_netto;
+                           artwork.nationality = doc.artists_natio.replace(/;-;/g,', ');
+                           artwork.technique = doc.prod_technique;
+                           artwork.owner = doc.owner;
+
+                       }else if (solrResp.numFound === 0){
+                           scope.resultText = "No SMK records found";
+                       }else{
+                           scope.resultText = "More than one SMK record found. Not good.";
+                       }
+                       if (artwork && artwork.inventoryNum){
+                           scope.groups[scope.groups.length] =
+                           {name:"Results from Corpus",
+                                   items:[{label:artwork.inventoryNum + " " + artwork.title,
+                                       model:artwork}]
+                           };
+                       }
+                   })
+                   .error(function (response) {
+                       scope.loading = false; /*hide spinner*/
+                       scope.resultText = "The SMK server is unavailable";
+                   })
+               };
+
+               scope.searchSmk = function (id) {
+                   scope.loading = true; /*show spinner*/
+                   scope.groups = [];
+                   scope.resultText = "Searching SMK...";
+                   /* adding some time here enables us to check the "loading" icon*/
+                   /* hint: wrapping first argument as 'function' allows passing the id parameter*/
+                   $timeout(function() {getSMK(id)}, 1000);
+               }
+

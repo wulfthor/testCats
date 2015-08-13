@@ -1,0 +1,33 @@
+{
+    "response": {
+        "docs": [
+            {
+                "_version_": 1484397071973744640,
+                "artists_data": "Wilhelm Bendz",
+                "artists_natio": "Danish",
+                "csid": "7d1618dd-0711-46f6-a225-0c14eb3b0cfa",
+                "dimension_brutto": "118 x 104.6 x 11.5 cm",
+                "dimension_netto": "98 x 85 cm",
+                "externalurl": "http://cspic.smk.dk/globus/GLOBUS%202011/KMS280.jpg",
+                "id": "KMS280",
+                "id_s": "KMS280",
+                "object_production_date": "1826",
+                "object_production_date_earliest": "1826-01-01T00:00:00Z",
+                "object_production_date_latest": "1826-12-31T00:00:00Z",
+                "prod_technique": "Oil on canvas",
+                "title_first": "En ung kunstner (Ditlev Blunck) betragter en skitse i et spejl"
+            }
+        ],
+        "numFound": 1,
+        "start": 0
+    },
+    "responseHeader": {
+        "QTime": 0,
+        "params": {
+            "indent": "true",
+            "q": "id:KMS280",
+            "wt": "json"
+        },
+        "status": 0
+    }
+}

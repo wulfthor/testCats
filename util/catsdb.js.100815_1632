@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var MongoClient = require('mongodb').MongoClient;
+var format = require('util').format;
+//var db = MongoClient.connect('mongodb://127.0.0.1:27017/cats', function (err, db) {
+MongoClient.connect('mongodb://127.0.0.1:27017/cats', function (err, db) {
+  db.artwork.findOne();
+});
+
+

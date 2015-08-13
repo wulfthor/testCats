@@ -1,0 +1,421 @@
+div#viewContainer
+	div.col-lg-2
+	div.col-sm-5.col-lg-4
+		div
+			button.btn.btn-me(ng-click="previousItem()", popover="Navigate to the previous search result item", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
+				span.glyphicon.glyphicon-chevron-left
+			span
+				|  {{itemIndex + ((searchResultsPageNum - 1) * itemsPerPage)  + 1}} of {{searchResultsTotalSize}}  
+			button.btn.btn-me(ng-click="nextItem()", popover="Navigate to the next search result item", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
+					span.glyphicon.glyphicon-chevron-right
+			button.btn.btn-me(ng-click="backToSearch()", popover="Return to the search results", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
+					span.glyphicon.glyphicon-search
+		br
+		div
+			h4 {{record.sampleType.name}}  {{record.referenceNumber}}
+		br
+		accordion(close-others="false")
+			accordion-group(heading="Sample metadata", is-open="statusMeta.isSampleOpen")
+				div.row(ng-show="record.originLocation")
+					div.col-sm-4
+						label Sample origin
+					div.col-sm-8{{record.originLocation}}
+				div.row(ng-show="record.sampleDate")
+					div.col-sm-4
+						label Sample date
+					div.col-sm-8{{record.sampleDate | date:'dd/MM/yyyy'}}
+				div.row(ng-show="record.owner.name")
+					div.col-sm-4
+						label Institution
+					div.col-sm-8{{record.owner.name}}
+						span(ng-show="record.owner.secondaryname")
+							|  ({{record.owner.secondaryname}})
+				div.row(ng-show="record.employee")
+					div.col-sm-4
+						label Employee
+					div.col-sm-8{{record.employee}}
+				div.row(ng-show="record.sampleLocation")
+					div.col-sm-4
+						label Sample location
+					div.col-sm-8{{record.sampleLocation}}
+				div.row(ng-show="record.remarks")
+					div.col-sm-4
+						label Remarks
+					div.col-sm-8{{record.remarks}}
+				div(ng-switch on="record.sampleType.id")
+					div(ng-switch-when="fibre")
+						div.row(ng-show="record.fibreType")
+							div.col-sm-4
+								label Fibre type
+							div.col-sm-8
+								span(ng-repeat="item in record.fibreType")
+									{{item.name}}
+									span(ng-show="item.secondaryname")
+										|  ({{item.secondaryname}})
+									span
+										{{$last ? '' : ', '}}
+						div.row(ng-show="record.fibreGlue")
+							div.col-sm-4
+								label Fibre Glue
+							div.col-sm-8
+								span(ng-repeat="item in record.fibreGlue")
+									{{item.name}}
+									span(ng-show="item.secondaryname")
+										|  ({{item.secondaryname}})
+									span
+										{{$last ? '' : ', '}}
+						div(ng-show="record.fibreLigin == true").row
+							div.col-sm-4
+								label Ligin
+							div.col-sm-8
+								|Yes
+						div(ng-show="record.fibreAlum == true").row
+							div.col-sm-4
+								label Alum
+							div.col-sm-8
+								|Yes
+						div(ng-show="record.fibreFiller == true").row
+							div.col-sm-4
+								label Filler
+							div.col-sm-8
+								|Yes
+					div(ng-switch-when="material")
+						div.row(ng-show="record.materialType")
+							div.col-sm-4
+								label Material type
+							div.col-sm-4
+								span(ng-repeat="item in record.materialType")
+									{{item.name}}
+									span(ng-show="item.secondaryname")
+										|  ({{item.secondaryname}})
+									span
+										{{$last ? '' : ', '}}
+					div(ng-switch-when="paint")
+						div(ng-show="record.paintPriming == true").row
+							div.col-sm-4
+								label Priming
+							div.col-sm-8
+								|Yes
+						div.row(ng-show="record.paintLayerDescription")
+							div.col-sm-4
+								label Paint layers description
+							div.col-sm-8{{record.paintLayerDescription}}
+						div(ng-repeat="item in record.paintLayer")
+							div.row(ng-show="item.layerType.name")
+								div.col-sm-4
+									label {{item.layerType.name}} layer ({{$index + 1}})
+							div.row(ng-show="item.paintBinder")
+								div.col-sm-4
+									label.sub Binders
+								div.col-sm-8
+									span(ng-repeat="binder in item.paintBinder")
+										{{binder.name}}
+										span(ng-show="binder.secondaryname")
+											|  ({{binder.secondaryname}})
+										span
+											{{$last ? '' : ', '}}
+							div.row(ng-show="item.colour")
+								div.col-sm-4
+									label.sub Colours
+								div.col-sm-8
+									span(ng-repeat="colour in item.colour")
+										{{colour.name}}
+										span(ng-show="colour.secondaryname")
+											|  ({{colour.secondaryname}})
+										span
+											{{$last ? '' : ', '}}
+							div.row(ng-show="item.dye")
+								div.col-sm-4
+									label.sub Dyes
+								div.col-sm-8
+									span(ng-repeat="dye in item.dye")
+										{{dye.name}}
+										span(ng-show="dye.secondaryname")
+											|  ({{dye.secondaryname}})
+										span
+											{{$last ? '' : ', '}}
+							div.row(ng-show="item.pigment")
+								div.col-sm-4
+									label.sub Pigments
+								div.col-sm-8
+									span(ng-repeat="pigment in item.pigment")
+										{{pigment.name}}
+										span(ng-show="pigment.secondaryname")
+											|  ({{pigment.secondaryname}})
+										span
+											{{$last ? '' : ', '}}
+					div(ng-switch-when="pigment")
+						div.row(ng-show="record.pigmentColourClass.name")
+							div.col-sm-4
+								label Colour Classification
+							div.col-sm-8{{record.pigmentColourClass.name}}
+								span(ng-show="record.pigmentColourClass.secondaryname")
+									|  ({{record.pigmentColourClass.secondaryname}})
+						div.row(ng-show="record.pigmentSource")
+							div.col-sm-4
+								label Source
+							div.col-sm-8{{record.pigmentSource}}
+						div.row(ng-show="record.pigmentProdNumber")
+							div.col-sm-4
+								label Production no./Batch no.
+							div.col-sm-8{{record.pigmentProdNumber}}
+						div.row(ng-show="record.pigmentSecondryProvenance")
+							div.col-sm-4
+								label Secondary provenance
+							div.col-sm-8{{record.pigmentSecondryProvenance}}
+						div.row(ng-show="record.pigmentOrigin")
+							div.col-sm-4
+								label Place of origin
+							div.col-sm-8{{record.pigmentOrigin}}
+						div.row(ng-show="record.pigmentComposition")
+							div.col-sm-4
+								label Chemical composition
+							div.col-sm-8{{record.pigmentComposition}}
+						div.row(ng-show="record.pigmentLabelName")
+							div.col-sm-4
+								label Pigment label
+							div.col-sm-8{{record.pigmentLabelName}}
+						div.row(ng-show="record.pigmentName.name")
+							div.col-sm-4
+								label Pigment name
+							div.col-sm-8{{record.pigmentName.name}}
+								span(ng-show="record.pigmentName.secondaryname")
+									|  ({{record.pigmentName.secondaryname}})
+						div.row(ng-show="record.pigmentForm.name")
+							div.col-sm-4
+								label Form
+							div.col-sm-8{{record.pigmentForm.name}}
+								span(ng-show="record.pigmentForm.secondaryname")
+									|  ({{record.pigmentForm.secondaryname}})
+						div.row(ng-show="record.productionDate")
+							div.col-sm-4
+								label Production date
+							div.col-sm-8{{record.productionDate | date:'dd/MM/yyyy'}}
+						div.row(ng-show="record.pigmentContainer.name")
+							div.col-sm-4
+								label Container
+							div.col-sm-8{{record.pigmentContainer.name}}
+								span(ng-show="record.pigmentContainer.secondaryname")
+									|  ({{record.pigmentContainer.secondaryname}})
+					div(ng-switch-when="stretcher")
+						div.row(ng-show="record.stretcherType")
+							div.col-sm-4
+								label Stretcher type
+							div.col-sm-8
+								span(ng-repeat="item in record.stretcherType")
+									{{item.name}}
+									span(ng-show="item.secondaryname")
+										|  ({{item.secondaryname}})
+									span
+										{{$last ? '' : ', '}}
+						div.row(ng-show="record.stretcherMaterialType")
+							div.col-sm-4
+								label Material type
+							div.col-sm-8
+								span(ng-repeat="item in record.stretcherMaterialType")
+									{{item.name}}
+									span(ng-show="item.secondaryname")
+										|  ({{item.secondaryname}})
+									span
+										{{$last ? '' : ', '}}
+						div.row(ng-show="record.stretcherCondition.name")
+							div.col-sm-4
+								label Condition
+							div.col-sm-8{{record.stretcherCondition.name}}
+								span(ng-show="record.stretcherCondition.secondaryname")
+									|  ({{record.stretcherCondition.secondaryname}})
+						div.row(ng-show="record.stretcherJointTechnique")
+							div.col-sm-4
+								label Joint technique
+							div.col-sm-8
+								span(ng-repeat="item in record.stretcherJointTechnique")
+									{{item.name}}
+									span(ng-show="item.secondaryname")
+										|  ({{item.secondaryname}})
+									span
+										{{$last ? '' : ', '}}
+						div.row(ng-show="record.stretcherDimensions")
+							div.col-sm-4
+								label Dimensions
+							div.col-sm-8{{record.stretcherDimensions}}
+						div.row(ng-show="record.stretcherProductionDateEarliest")
+							div.col-sm-4
+								label Production date earliest/single
+							div.col-sm-8{{record.stretcherProductionDateEarliest | date:'dd/MM/yyyy'}}
+						div.row(ng-show="record.stretcherProductionDateLatest")
+							div.col-sm-4
+								label Production date latest
+							div.col-sm-8{{record.stretcherProductionDateLatest | date:'dd/MM/yyyy'}}
+						div.row(ng-show="record.stretcherSource")
+							div.col-sm-4
+								label Source
+							div.col-sm-8{{record.stretcherSource}}
+			accordion-group(heading="Analysis description(s)", is-open="statusMeta.isAnalysisOpen", ng-show="record.sampleAnalysis[0].type.name")
+				accordion(close-others="false")
+					accordion-group(ng-show="item.type.name", heading="Analysis {{$index + 1}} : {{item.type.name}}", is-open="status.open", ng-repeat="item in record.sampleAnalysis")
+						div.row(ng-show="item.referenceNumber")
+							div.col-sm-4
+								label Ref. number
+							div.col-sm-8{{item.referenceNumber}}
+						div.row(ng-show="item.date")
+							div.col-sm-4
+								label Date
+							div.col-sm-8{{item.date}}
+						div.row(ng-show="item.employee")
+							div.col-sm-4
+								label Employee
+							div.col-sm-8{{item.employee}}
+						div.row(ng-show="item.owner.name")
+							div.col-sm-4
+								label Owner
+							div.col-sm-8{{item.owner.name}}
+								span(ng-show="item.owner.secondaryname")
+									|  ({{item.owner.secondaryname}})
+						div.row(ng-show="item.originLocation")
+							div.col-sm-4
+								label Location in artwork
+							div.col-sm-8{{item.originLocation}}
+						div.row(ng-show="item.location")
+							div.col-sm-4
+								label Report location
+							div.col-sm-8{{item.location}}
+						div(ng-show="item.type.name == 'X-radiography'")
+							div.row(ng-show="item.xrayType.name")
+								div.col-sm-4
+									label Type
+								div.col-sm-8{{item.xrayType.name}}
+									span(ng-show="item.xrayType.secondaryname")
+										|  ({{item.xrayType.secondaryname}})
+							div.row(ng-show="item.xrayFilmType.name")
+								div.col-sm-4
+									label Film type
+								div.col-sm-8{{item.xrayFilmType.name}}
+									span(ng-show="item.xrayFilmType.secondaryname")
+										|  ({{item.xrayFilmType.secondaryname}})
+							div.row(ng-show="item.xrayKv")
+								div.col-sm-4
+									label Kv
+								div.col-sm-8{{item.xrayKv}}
+							div.row(ng-show="item.xrayMa")
+								div.col-sm-4
+									label mA
+								div.col-sm-8{{item.xrayMa}}
+							div.row(ng-show="item.xrayTime")
+								div.col-sm-4
+									label Time
+								div.col-sm-8{{item.xrayTime}}
+							div.row(ng-show="item.xrayFocus")
+								div.col-sm-4
+									label Focus
+								div.col-sm-8{{item.xrayFocus}}
+							div.row(ng-show="item.xrayDistance")
+								div.col-sm-4
+									label Distance
+								div.col-sm-8{{item.xrayDistance}}
+							div.row(ng-show="item.xrayFilter.name")
+								div.col-sm-4
+									label Filter
+								div.col-sm-8{{item.xrayFilter.name}}
+									span(ng-show="item.xrayFilter.secondaryname")
+										|  ({{item.xrayFilter.secondaryname}})
+						div(ng-show="item.type.name == 'Photographic'")
+							div.row(ng-show="item.mediaType.name")
+								div.col-sm-4
+									label Type
+								div.col-sm-8{{item.mediaType.name}}
+									span(ng-show="item.mediaType.secondaryname")
+										|  ({{item.mediaType.secondaryname}})
+							div.row(ng-show="item.mediaFilm.name")
+								div.col-sm-4
+									label Film
+								div.col-sm-8{{item.mediaFilm.name}}
+									span(ng-show="item.mediaFilm.secondaryname")
+										|  ({{item.mediaFilm.secondaryname}})
+							div.row(ng-show="item.mediaFormat.name")
+								div.col-sm-4
+									label Format
+								div.col-sm-8{{item.mediaFormat.name}}
+									span(ng-show="item.mediaFormat.secondaryname")
+										|  ({{item.mediaFormat.secondaryname}})
+							div.row(ng-show="item.mediaFilter.name")
+								div.col-sm-4
+									label Filter
+								div.col-sm-8{{item.mediaFilter.name}}
+									span(ng-show="item.mediaFilter.secondaryname")
+										|  ({{item.mediaFilter.secondaryname}})
+							div.row(ng-show="item.mediaLighting")
+								div.col-sm-4
+									label Lighting
+								div.col-sm-8
+									span(ng-repeat="light in item.mediaLighting")
+										{{light.name}}
+										span(ng-show="light.secondaryname")
+											|  ({{light.secondaryname}})
+										span
+											{{$last ? '' : ', '}}
+							div.row(ng-show="item.mediaScope")
+								div.col-sm-4
+									label Scope
+								div.col-sm-8
+									span(ng-repeat="scope in item.mediaScope")
+										{{scope.name}}
+										span(ng-show="scope.secondaryname")
+											|  ({{scope.secondaryname}})
+										span
+											{{$last ? '' : ', '}}
+						div.row(ng-show="item.description")
+							div.col-sm-4
+								label Method/Description
+							div.col-sm-8
+								{{item.description}}
+						div.row(ng-show="item.results")
+							div.col-sm-4
+								label Results
+							div.col-sm-8
+								{{item.results}}
+			accordion-group(heading="Artwork metadata", is-open="statusMeta.isArtworkOpen", ng-show="record.artwork.inventoryNum")
+				accordion(close-others="false")
+					div.row(ng-show="record.artwork.inventoryNum")
+						div.col-sm-4
+							label Inv. number
+						div.col-sm-8{{record.artwork.inventoryNum}}
+					div.row(ng-show="record.artwork.title")
+						div.col-sm-4
+							label Title
+						div.col-sm-8{{record.artwork.title}}
+					div.row(ng-show="record.artwork.artist")
+						div.col-sm-4
+							label Artist(s)
+						div.col-sm-8{{record.artwork.artist}}
+					div.row(ng-show="record.artwork.nationality")
+						div.col-sm-4
+							label Artist nationality
+						div.col-sm-8{{record.artwork.nationality}}
+					div.row(ng-show="record.artwork.technique")
+						div.col-sm-4
+							label  Technique / Material
+						div.col-sm-8{{record.artwork.technique}}
+					div.row(ng-show="record.artwork.productionDateEarliest")
+						div.col-sm-4
+							label Production date earliest/single
+						div.col-sm-8{{record.artwork.productionDateEarliest | date:'dd/MM/yyyy'}}
+					div.row(ng-show="record.artwork.productionDateLatest")
+						div.col-sm-4
+							label Production date latest
+						div.col-sm-8{{record.artwork.productionDateLatest | date:'dd/MM/yyyy'}}
+					div.row(ng-show="record.artwork.dimensions")
+						div.col-sm-4
+							label Dimensions
+						div.col-sm-8{{record.artwork.dimensions}}
+					div.row(ng-show="record.artwork.owner")
+						div.col-sm-4
+							label Owner
+						div.col-sm-8{{record.artwork.owner}}
+	div.col-sm-6
+		div(ng-controller="CarouselImageCtrl", ng-show="showImages", style="max-width:600px").row
+			carousel(interval="myInterval", disable-animation="true")
+				slide(ng-repeat="slide in slides", active="slide.active")
+					img(ng-src="{{slide.image}}", style="margin:auto")
+					div.carousel-caption
+						h4 {{slide.title}}
+						p {{slide.text}}

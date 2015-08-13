@@ -1,0 +1,215 @@
+/* app css stylesheet */
+
+/*show modals within accordions*/
+.panel-group .panel {
+    overflow: inherit;
+}
+
+/*red error border*/
+form.submitted .has-error, form.submitted .ng-invalid {
+/*   border-color: red; */
+    border-color: rgba(229, 103, 23, 0.8);
+    box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
+    outline: 0 none;
+}
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+/*   padding: 0 0 0.5em; */
+}
+.modal-footer .spinner {
+	height: 34px;
+	padding-right: 20px;
+}
+.modal-header {
+/*	background-color: #f5f5f5;*/
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+/*This is for bootstrap UI*/
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.titlearea{
+	background: @gray-lighter;
+}
+#viewContainer, #searchContainer {
+	margin: 20px;
+}
+.titlearea {
+	background : #212121; /*similar to CATS logo bg*/
+	color : white;
+	vertical-align : top;
+}
+.titlearea h2, .titlearea h3  {
+	margin-left: 20px;
+}
+.titlearea form {
+/* 	padding-top: 20px; */
+}
+/*remove link styling in title TODO: use image instead*/
+.titlearea a {
+  color: inherit; 
+  text-decoration: inherit; /* no underline */
+}
+.titlearea .login {
+/* 	padding-top: 20px; */
+}
+.titlearea .login button{
+	background-color: #212121;
+	color: white;
+	border-color: #212121;
+}
+.titlearea img {
+	margin-right: 20px;
+	margin-left: 20px;	
+/* 	float:right; */
+}
+.titlearea .dbname {
+	padding-top: 48px;
+}
+
+.searchreshdr {
+	padding-bottom: 10px;
+}
+
+/*spacing borders for tab in tab*/
+.embeddedTab {
+	padding: 20px;	
+}
+.paintLayersTab {
+	border: 2px solid #E5E5E5;
+	border-radius: 5px;
+}
+/*removes grey background form carousel*/
+#viewContainer .carousel-control.left, #viewContainer .carousel-control.right{
+/*  background-image: none; */
+}
+
+/*Fix found on stackoverflow for glyphicon font problem*/
+.glyphicon {
+    font-family: inherit;
+}
+.glyphicon:before{
+    font-family:'Glyphicons Halflings';
+}
+catsartistselect .dropdown-menu, catsmultiselect .dropdown-menu{
+    padding-left: 5px; 
+    padding-right: 5px;
+    min-width: 340px;
+}
+
+catsartistselect .dropdown-menu > li > a, catsmultiselect .dropdown-menu > li > a {
+    padding: 3px 10px;
+    cursor:pointer;
+}
+/*style multiselect like bootstrap*/
+catsartistselect .btn-group button.dropdown-toggle, catsmultiselect .btn-group button.dropdown-toggle{
+/* 	width: 100%; */
+/* 	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset; */
+	color: #555;
+	white-space: normal;
+	width: 100%;
+	text-align: left;
+}
+catsartistselect .btn-group, catsmultiselect .btn-group {
+	width: 100%;
+}
+catsartistselect ul, catsmultiselect ul {
+	list-style-type: none;
+	padding: 0;
+}	
+/*lines between form elements*/
+.uigroup {
+/* 	padding-top: 15px; */
+/*  	border-bottom: 1px solid #E5E5E5;  */
+ 	margin-bottom: 10px 
+}
+catsartistselect .checkbox, catsmultiselect .checkbox{
+	display: inline;
+	min-height: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+/*These three are just to remove styling from bootstrap accordion*/
+.panel {
+    background-color: white;
+    border: none;
+    box-shadow: none;
+}
+.panel-default > 	.panel-heading {
+    background-color: white;
+    border-color: #DDD;
+    padding: 0px;
+}
+.panel-group .panel-heading + .panel-collapse .panel-body {
+    border-top: 0px;
+}
+/*to indent sub labels*/
+label.sub {
+	padding-left: 20px;
+	font-weight:normal; !important
+}
+
+/*fade animations for bootstrap alerts*/
+.animation.ng-enter,
+.animation.ng-leave{
+  -webkit-transition: 1s;
+}
+.animation.ng-enter {
+  opacity: 0;
+}
+.animation.ng-leave {
+  opacity: 1;
+}
+.animation.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+.animation.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+.menutitle {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #EFEFEF;
+}
+
+/*Remove filter toggle switch background shading*/
+#searchContainer span.switch-right.ng-binding,
+#searchContainer span.knob.ng-binding{
+	background-image: none;
+	background-color: inherit;
+	/*font-size: 14px;*/
+}
+#searchContainer span.switch-left.ng-binding{
+	background-image: none;
+	/*font-size: 14px;*/
+}
+
+@media print { 
+
+  .titlearea{
+     display: none;
+  }
+ 
+}

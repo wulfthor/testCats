@@ -1,0 +1,71 @@
+extends layout
+
+block body
+	div(ng-controller='AppCtrl').titlearea.group
+		div.div.row 
+			div.col-lg-2
+			div.col-sm-7.col-md-8.col-lg-5
+				a(href='browse'): img(src="/images/catsdb.png")
+			div.col-sm-5.col-md-4.col-lg-3
+				row	
+					div.login
+						button(ng-show="!loggedin", ng-click="loginUser()").btn.btn-default
+							span.glyphicon.glyphicon-user 
+								|Login
+						button(ng-show="loggedin", ng-click="logout()").btn.btn-default
+							span.glyphicon.glyphicon-user 
+								|Logout {{email}}
+						script(type="text/ng-template")#myLoginContent
+							div.modal-header
+								h3 Login
+							div.modal-body
+								form(role="form", name="form", novalidate, ng-class="{submitted:submitted}")
+									div.form-group
+										label.control_label(for="email") Email
+										input(type="email", ng-model="email", ng-required="true", ng-model-options="{updateOn: 'blur'}",
+												required, placeholder="Email").form-control
+									div.form-group
+										label.control_label(for="password") Password
+										input(type="password", ng-model="password", ng-required="true", ng-model-options="{updateOn: 'blur'}",
+												required, placeholder="Password").form-control
+									div.form-group(ng-show="changePassword")
+										label.control_label New Password
+										input(type="password", ng-model="newPassword", ng-required="changePassword", ng-model-options="{updateOn: 'blur'}",
+												required, placeholder="New password").form-control
+									div.form-group(ng-show="changePassword")
+										label.control_label New Password (repeat)
+										input(type="password", ng-model="newPasswordRepeat", ng-required="changePassword", ng-model-options="{updateOn: 'blur'}",
+												required, placeholder="New password (repeat)").form-control
+									alert(ng-repeat="alert in alerts", type="{{alert.type}}", close="closeAlert($index)").animation: i(class="{{alert.icon}}")  {{alert.msg}}
+									button(ng-click="login(form, email, password, newPassword, newPasswordRepeat, changePassword)", type="button").btn.btn-primary.btn-block Login
+							div.modal-footer
+								label.checkbox-inline.control_label Change password
+									input(type="checkbox", ng-model="changePassword")
+				row
+					div.col-sm-10
+						form(role="form").form-inline
+							div.form-group
+								label.sr-only Search
+								div.input-group
+									input(type="text", ng-model="searchTerm", placeholder="Enter search term").form-control
+									span.input-group-btn
+										button(ng-click="searchClicked(searchTerm)").btn.btn-default: i.glyphicon.glyphicon-search
+
+	div(ng-view)
+
+	//div
+		CATS Reference Sample Database: v
+		span(app-version)
+
+
+	script(src='/bower_components/ng-file-upload/angular-file-upload-shim.min.js')
+	script(src='/bower_components/angular/angular.min.js')
+	script(src='/bower_components/angular-route/angular-route.min.js')
+	script(src='/bower_components/angular-animate/angular-animate.min.js')
+	script(src='/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js')
+	script(src='/bower_components/angular-toggle-switch/angular-toggle-switch.min.js')
+	script(src='/bower_components/ng-file-upload/angular-file-upload.min.js')
+	script(src='/bower_components/ng-file-upload/FileAPI.min.js')
+	script(src='/bower_components/amitava82-angular-multiselect/src/multiselect-tpls.js')
+	
+	script(src='dist/catsdb.min.js')
