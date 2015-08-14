@@ -240,15 +240,16 @@ controller('SearchController', ['$q', '$scope', 'catsAPIservice', 'state', '$mod
     /* Look for updates on artwork */
     $scope.updateArtworkClicked = function(sampleArtworkId) {
         console.log("into update");
-        // getArtworkSMK
-        // getArtworkSample
-        // compare
-        // if difference then updateArtworkSample
-
         catsAPIservice.readDiff(sampleArtworkId).success(function (response) {
             console.log("into readAW");
             var firstObj = response;
-            console.log(JSON.stringify(firstObj));
+            console.log("res " + JSON.stringify(firstObj));
+            console.log(response.updatedExisting);
+            if (response.updatedExisting) {
+                alert('Artwork updated');
+            } else {
+                alert('Artwork was up to date');
+            }
         });
     };
 

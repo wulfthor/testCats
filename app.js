@@ -606,9 +606,7 @@ app.get('/api/name', api.name);
  * Usage : searchsmk?id=KMS1
  */
 app.get('/searchsmk', function (req, res) {
-    console.log("--B--");
-    //console.log(req);
-    console.log("--E--");
+
     var id = req.query.id;
     var options = {
         host: 'localhost',           //'csdev-seb',
@@ -618,8 +616,6 @@ app.get('/searchsmk', function (req, res) {
         method: 'GET'
     };
     var proxy = http.request(options, function (resp) {
-        console.log("--A--");
-        console.log("--B--");
         resp.pipe(res, {
             end: true
         });
@@ -669,7 +665,6 @@ app.get('/sample', function (req, res) {
         var pageNum = parseInt(req.query.pageNum);
 
         var query = buildSampleQuery(req);
-        console.log(query);
 
         if (req.query.count == 'true') {
             /*only return a count*/
@@ -1116,6 +1111,113 @@ app.get('/artwork/:id', function (req, res) {
     }
 });
 
+/**
+ * Retrieve diff between SMKArtwork and sample-related work
+ * testval: var value = '77d9d483-7da1-4e11-af57-5aafd6a31174';
+ */
+
+app.get('/awdiff/:value', function (req, res) {
+
+    var awSelector = {};
+    var sampleSelector = {};
+    var value = req.params.value;
+    var key = "corpusId";
+
+    awSelector['corpusId'] = value;
+    sampleSelector['artwork.corpusId'] = value;
+
+
+    function myLookup(selector) {
+
+        var deferred = Q.defer();
+        db.artworks.findOne(selector,
+            function (err, items) {
+                if (err || !items) {
+                    logger.error("failed to retrieve artworks with query : " + JSON.stringify(selector));
+                    deferred.reject(err);
+                } else {
+                    logger.info("found artworks");
+                    logger.info("retrieve artworks with query : " + JSON.stringify(selector));
+                    deferred.resolve(items);
+                }
+            });
+        return deferred.promise;
+    };
+
+    myLookup(awSelector).then(function (data) {
+
+        Q(smkRoutes.smkSearch(value)).then(function (retval) {
+            logger.debug(JSON.parse(retval).response.docs[0].title_first);
+            logger.debug(smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
+
+            // now diff
+            var myDiff = diff(data, smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
+
+            // build options for bulk-update
+            var tmpKey = "";
+            var tmpVal = "";
+            var sampleUpdator = {};
+            var awUpdator = {};
+            var counter = 0;
+
+            myDiff.forEach(function (item) {
+                logger.info("diff: " + JSON.stringify(item));
+                if (item.kind == 'E') {
+                    tmpKey = "artwork." + item.path;
+                    tmpVal = item.rhs;
+                    sampleUpdator[tmpKey] = tmpVal;
+                    awUpdator[item.path] = item.rhs;
+                    counter++;
+
+                }
+            });
+            if (counter <= 0) {
+                res.header('Location', 'browse/');
+                res.status(200).send("ok");
+            } else {
+                logger.info("Changes observed");
+                // first update embedded artworks
+
+                /* test string
+                 bulk.find({'artwork.corpusId': '7cf3a4d5-95e2-4499-a412-edac64c7d65c'}).update({$set: {'artwork.artist':'Jan Szteen',"artwork.title":"David hyldes efter sejren over Goliat og filistrene"}});
+                 */
+                logger.debug("Upd: " + JSON.stringify(sampleUpdator));
+                logger.debug("UpdAw: " + JSON.stringify(awUpdator));
+                logger.debug("QAs: " + JSON.stringify(awSelector));
+                logger.debug("QSample: " + JSON.stringify(sampleSelector));
+
+                var col = db.collection("samples");
+                var bulk = col.initializeOrderedBulkOp();
+                bulk.find(sampleSelector).update({$set: sampleUpdator});
+
+                bulk.execute(function (err, result) {
+                    if (err) {
+                        logger.error(err);
+                    }
+                    logger.info("Changed: " + result.nMatched + " " + result.nModified);
+                });
+                // now update artworks
+                db.artworks.update(awSelector, {$set: awUpdator}, function (err, record, lastErrorObject) {
+
+                    if (err || !record) {
+                        logger.error("user not saved");
+                        res.status(500).send(err);
+                    } else {
+                        logger.info('successfully updating: ' + JSON.stringify(record));
+                        res.header('Location', 'browse/');
+                        res.status(200).send(record);
+                    }
+
+                });
+
+            }
+        });
+    });
+
+});
+
+
+
 /********************
  * VOCAB operations
  ********************/
@@ -1352,111 +1454,6 @@ app.get('/image/:name', function (req, res, next) {
             stdout.on('error', next);
         });
 });
-/**
- * Retrieve diff between SMKArtwork and sample-related work
- * testval: var value = '77d9d483-7da1-4e11-af57-5aafd6a31174';
- */
-
-app.get('/awdiff/:value', function (req, res) {
-
-    var awSelector = {};
-    var sampleSelector = {};
-    var value = req.params.value;
-    var key = "corpusId";
-
-    awSelector['corpusId'] = value;
-    sampleSelector['artwork.corpusId'] = value;
-
-
-    function myLookup(selector) {
-
-        var deferred = Q.defer();
-        db.artworks.findOne(selector,
-            function (err, items) {
-                if (err || !items) {
-                    logger.error("failed to retrieve artworks with query : " + JSON.stringify(selector));
-                    deferred.reject(err);
-                } else {
-                    logger.info("found artworks");
-                    logger.info("retrieve artworks with query : " + JSON.stringify(selector));
-                    deferred.resolve(items);
-                }
-            });
-        return deferred.promise;
-    };
-
-    myLookup(awSelector).then(function (data) {
-
-        Q(smkRoutes.smkSearch(value)).then(function (retval) {
-            logger.debug(JSON.parse(retval).response.docs[0].title_first);
-            logger.debug(smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
-
-            // now diff
-            var myDiff = diff(data, smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
-
-            // build options for bulk-update
-            var tmpKey = "";
-            var tmpVal = "";
-            var sampleUpdator = {};
-            var awUpdator = {};
-            var counter = 0;
-
-            myDiff.forEach(function (item) {
-                logger.info("diff: " + JSON.stringify(item));
-                if (item.kind == 'E') {
-                    tmpKey = "artwork." + item.path;
-                    tmpVal = item.rhs;
-                    sampleUpdator[tmpKey] = tmpVal;
-                    awUpdator[item.path] = item.rhs;
-                    counter++;
-
-                }
-            });
-            if (counter <= 0) {
-                res.header('Location', 'browse/');
-                res.status(200).send("ok");
-            } else {
-                logger.info("Changes observed");
-                // first update embedded artworks
-
-                /* test string
-                 bulk.find({'artwork.corpusId': '7cf3a4d5-95e2-4499-a412-edac64c7d65c'}).update({$set: {'artwork.artist':'Jan Szteen',"artwork.title":"David hyldes efter sejren over Goliat og filistrene"}});
-                 */
-                logger.debug("Upd: " + JSON.stringify(sampleUpdator));
-                logger.debug("UpdAw: " + JSON.stringify(awUpdator));
-                logger.debug("QAs: " + JSON.stringify(awSelector));
-                logger.debug("QSample: " + JSON.stringify(sampleSelector));
-
-                var col = db.collection("samples");
-                var bulk = col.initializeOrderedBulkOp();
-                bulk.find(sampleSelector).update({$set: sampleUpdator});
-
-                bulk.execute(function (err, result) {
-                    if (err) {
-                        logger.error(err);
-                    }
-                    logger.info("Changed: " + result.nMatched + " " + result.nModified);
-                });
-                // now update artworks
-                db.artworks.update(awSelector, {$set: awUpdator}, function (err, record, lastErrorObject) {
-
-                    if (err || !record) {
-                        logger.error("user not saved");
-                        res.status(500).send(err);
-                    } else {
-                        logger.info('successfully updating: ' + JSON.stringify(record));
-                        res.header('Location', 'browse/');
-                        res.status(200).send(record);
-                    }
-
-                });
-
-            }
-        });
-    });
-
-});
-
 
 /********************
  * RECORD operations
