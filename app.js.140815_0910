@@ -1362,14 +1362,12 @@ app.get('/image/:name', function (req, res, next) {
 //app.get('/diff/:value', smkRoutes.smkSearch('cc553881-319a-4bee-9422-44f9ee905f91'));
 app.get('/awdiff/:value', function (req, res) {
 
-    var awSelector = {};
-    var sampleSelector = {};
+    var selector = {};
     var value = req.params.value;
     var key = "corpusId";
     console.log(value);
     //var value = '77d9d483-7da1-4e11-af57-5aafd6a31174';
-    awSelector['corpusId'] = value;
-    sampleSelector['artwork.corpusId'] = value;
+    selector['corpusId'] = value;
 
 
     function myLookup(selector) {
@@ -1389,8 +1387,7 @@ app.get('/awdiff/:value', function (req, res) {
         return deferred.promise;
     };
 
-    myLookup(awSelector).then(function (data) {
-        console.log("into MyLookup" + awSelector);
+    myLookup(selector).then(function (data) {
         console.log(data.title);
 
         Q(smkRoutes.smkSearch(value)).then(function (retval) {
@@ -1399,68 +1396,62 @@ app.get('/awdiff/:value', function (req, res) {
             console.log(smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
 
             // now diff
-            var myDiff = diff(data, smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
+            var myDiff = diff(data,smkRoutes.keysToCats(JSON.parse(retval).response.docs[0]));
 
             // build options for bulk-update
             var tmpKey = "";
             var tmpVal = "";
             //var selector = {};
-            var sampleUpdator = {};
-            var awUpdator = {};
-            var counter = 0;
+            var updator = {};
 
             myDiff.forEach(function (item) {
                 console.log("IT: " + JSON.stringify(item));
                 if (item.kind == 'E') {
                     tmpKey = "artwork." + item.path;
                     tmpVal = item.rhs;
-                    sampleUpdator[tmpKey] = tmpVal;
-                    awUpdator[item.path] = item.rhs;
-                    counter++;
+                    updator[tmpKey] = tmpVal;
 
                 }
+                console.log(JSON.stringify(updator));
+
+
+                console.log(updator.length);
+                if (updator.length < 0) {
+                    logger.info("Changes observed");
+                    // first update embedded artworks
+
+                    /* test string
+                     bulk.find({'artwork.corpusId': '7cf3a4d5-95e2-4499-a412-edac64c7d65c'}).update({$set: {'artwork.artist':'Jan Szteen',"artwork.title":"David hyldes efter sejren over Goliat og filistrene"}});
+                     */
+                    console.log("U: " + JSON.stringify(updator));
+                    console.log("Q: " + JSON.stringify(selector));
+
+                    var col = db.collection("samples");
+                    var bulk = col.initializeOrderedBulkOp();
+                    bulk.find(selector).update({$set: updator});
+
+                    bulk.execute(function (err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        console.log(result.nModified);
+                    });
+                    /*
+                     // now update artworks
+                     db.artworks.findAndModify(selector,updator,function(err,record, lastErrorObject) {
+
+                     if (err || !record) {
+                     logger.error("user " + username + " not saved");
+                     res.status(500).send(err);
+                     } else {
+                     logger.info('successful, artwork: ' + record.inventoryNum);
+                     res.header('Location', 'user/');
+                     res.status(200).send(record);
+                     }
+                     });
+                     */
+                }
             });
-            if (counter <= 0) {
-            } else {
-                logger.info("Changes observed");
-                // first update embedded artworks
-
-                /* test string
-                 bulk.find({'artwork.corpusId': '7cf3a4d5-95e2-4499-a412-edac64c7d65c'}).update({$set: {'artwork.artist':'Jan Szteen',"artwork.title":"David hyldes efter sejren over Goliat og filistrene"}});
-                 */
-                console.log("U: " + JSON.stringify(sampleUpdator));
-                console.log("Ua: " + JSON.stringify(awUpdator));
-                console.log("Q: " + JSON.stringify(awSelector));
-                console.log("Q: " + JSON.stringify(sampleSelector));
-
-                var col = db.collection("samples");
-                var bulk = col.initializeOrderedBulkOp();
-                bulk.find(sampleSelector).update({$set: sampleUpdator});
-
-                bulk.execute(function (err, result) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    console.log("RES: ");
-                    console.log(result.nMatched + " " + result.nModified);
-                });
-                // now update artworks
-                console.log("info last");
-                db.artworks.update(awSelector, {$set: awUpdator}, function (err, record, lastErrorObject) {
-                    console.log("info last");
-
-                    if (err || !record) {
-                        logger.error("user not saved");
-                        res.status(500).send(err);
-                    } else {
-                        logger.info('successful, axrtwork: ' + JSON.stringify(record));
-                        //res.header('Location', 'user/');
-                        //res.status(200).send(record);
-                    }
-
-                });
-
-            }
         });
     });
 
