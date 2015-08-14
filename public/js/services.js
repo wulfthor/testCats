@@ -84,7 +84,7 @@ function($http) {
             return $http.get(url);
         },
         readDiff : function(id) {
-            var url = "diff/" + id;
+            var url = "awdiff/" + id;
             console.log(url);
             return $http.get(url);
         },

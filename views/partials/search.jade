@@ -749,7 +749,7 @@ div#searchContainer
 								td{{res.sampleLocation}}
 								td(ng-show="loggedin"): button(ng-click="registerClicked(res)", popover="Edit this sample record", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
 										span.glyphicon.glyphicon-edit
-								td(ng-show="loggedin"): button(ng-click="updateArtworkClicked(res.artwork.corpusId)", popover="Look if  this artwork has been updated", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
+								td(ng-show="loggedin"): button(ng-click="updateArtworkClicked(res.artwork.corpusId)", popover="Look if this artwork has been updated", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
 										span.glyphicon.glyphicon-question-sign
 								td(ng-show="role=='admin'"): button(ng-click="deleteClicked(res._id)", popover="Delete this sample record", popover-trigger="mouseenter", popover-popup-delay="1000").btn.btn-default
 										span.glyphicon.glyphicon-remove
