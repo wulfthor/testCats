@@ -1,0 +1,19 @@
+show dbs
+use cats
+show collections;
+db.artworks.findOne();
+db.artworks.find().count();
+db.artworks.find({inventoryNum:"KMSsp717"});
+db.artworks.find({inventoryNum:"KMSsp717"}).pretty();
+db.artworks.find({inventoryNum: {$regex:/KMS10/}},{externalurl:1}).pretty();
+db.artworks.find({inventoryNum: {$regex:/KMS10/}},{externalurl:1,_id:0}).pretty();
+db.samples.findOne();
+db.samples.find({artwork.inventoryNum: {$regex:/KMS103/}});
+db.samples.find({"artwork.inventoryNum": {$regex:/KMS10/}},{referenceNumber:1,"artwork.inventoryNum":1});
+db.samples.find({"artwork.inventoryNum": {$regex:/^[^K]/i}},{referenceNumber:1,"artwork.inventoryNum":1});
+use cats;
+db.artworks.find({inventoryNum:/KMSsp587/}).pretty();
+DBQuery.shellBatchSize = 300;
+db.samples.find({'artwork.inventoryNum': "KMSsp587"},{'referenceNumber': 1, 'artwork':1}).pretty();
+use cats;
+db.artworks.find({inventoryNum:KONS1}).pretty();

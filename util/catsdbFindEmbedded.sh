@@ -1,4 +1,5 @@
-#!/bin/bash  
+#!/bin/bash
+
 numargs=$#
 # default values
 DATABASE=cats
@@ -22,6 +23,9 @@ case $key in
     if [ $TYPE = "byid" ]; then
       FIELD="def"
     fi
+    if [ $TYPE = "embedAW" ]; then
+      FIELD="inventoryNum"
+    fi
     shift # past argument
     ;;
     -f|--field)
@@ -33,7 +37,7 @@ case $key in
     shift # past argument
     ;;
     -h|--help)
-      echo "usage: catsdb.sh -d <database> -c <collection> -t <type:all [-v <limit>] ,oneran,byfield,byid,byfieldspec> -f <field> -v <value>"
+      echo "usage: catsdb.sh -d <database> -c <collection> -t <type:all [-v <limit>] ,oneran,byfield,byid,byfieldspec,embedAW> -f <field> -v <value>"
       exit
     ;;
     --default)
@@ -71,7 +75,7 @@ if [ $TYPE = "byfieldspec" ];then
 /usr/local/bin/mongo --quiet --host=localhost:27017 << EOF
 DBQuery.shellBatchSize = 300;
 use $DATABASE;
-db.$COLLECTION.find({$FIELD:"$VALUE"}).pretty();
+db.$COLLECTION.find({$FIELD:$VALUE}).pretty();
 EOF
 fi
 
@@ -87,6 +91,14 @@ if [ $TYPE = "byid" ];then
 DBQuery.shellBatchSize = 300;
 use $DATABASE;
 db.$COLLECTION.find({_id:ObjectId("$VALUE")}).pretty();
+EOF
+fi
+
+if [ $TYPE = "embedAW" ];then
+/usr/local/bin/mongo --quiet --host=localhost:27017 << EOF
+DBQuery.shellBatchSize = 300;
+use $DATABASE;
+db.$COLLECTION.find({'artwork.inventoryNum': "$VALUE"},{'referenceNumber': 1, 'artwork':1}).pretty();
 EOF
 fi
 

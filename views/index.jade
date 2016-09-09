@@ -2,18 +2,18 @@ extends layout
 
 block body
 	div(ng-controller='AppCtrl').titlearea.group
-		div.div.row 
+		div.div.row
 			div.col-lg-2
 			div.col-sm-7.col-md-8.col-lg-5
 				a(href='browse'): img(src="/images/catsdb.png")
 			div.col-sm-5.col-md-4.col-lg-3
-				row	
+				row
 					div.login
 						button(ng-show="!loggedin", ng-click="loginUser()").btn.btn-default
-							span.glyphicon.glyphicon-user 
+							span.glyphicon.glyphicon-user
 								|Login
 						button(ng-show="loggedin", ng-click="logout()").btn.btn-default
-							span.glyphicon.glyphicon-user 
+							span.glyphicon.glyphicon-user
 								|Logout {{email}}
 						script(type="text/ng-template")#myLoginContent
 							div.modal-header
@@ -47,7 +47,7 @@ block body
 							div.form-group
 								label.sr-only Search
 								div.input-group
-									input(type="text", ng-model="searchTerm", placeholder="Enter xsearch term").form-control
+									input(type="text", ng-model="searchTerm", placeholder="Enter search term").form-control
 									span.input-group-btn
 										button(ng-click="searchClicked(searchTerm)").btn.btn-default: i.glyphicon.glyphicon-search
 
@@ -67,7 +67,7 @@ block body
 	script(src='/bower_components/ng-file-upload/angular-file-upload.min.js')
 	script(src='/bower_components/ng-file-upload/FileAPI.min.js')
 	script(src='/bower_components/amitava82-angular-multiselect/src/multiselect-tpls.js')
-	
+
 	//-<!-- build:js dist/catsdb.min.js -->
 	script(src='/public/js/lib/multiselect/cats-multiselect-tpls.js')
 	script(src='/public/js/lib/multiselect/cats-artistselect-tpls.js')

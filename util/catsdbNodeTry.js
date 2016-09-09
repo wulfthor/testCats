@@ -23,7 +23,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/cats', function (err, db) {
   if (err) {
     console.log(err);
   }
-  assert.equal(null, err);
+  //assert.equal(null, err);
   if (type == 'del'){
     removeDoc(db, bufObj, function() {
       //upsertDoc(db, bufObj, function() {
@@ -89,7 +89,6 @@ var updateDocument = function(db, aw, callback) {
   console.log("update .."  + aw.inventoryNum);
   //db.collection('artworks').update(selector,{$set: updator}), function(err, result) {
   db.collection('artworks').update(selector,{ $set: aw}, function(err, result) {
-    console.log("ddd");
     console.log(result);
     callback();
   });

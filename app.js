@@ -556,7 +556,11 @@ function buildSampleExcel(query) {
                     conf.rows[i][ii++] = (body[i].stretcherSource) ? body[i].stretcherSource : null;
 
                     /*analysis field*/
+
                     conf.rows[i][ii++] = (body[i].sampleAnalysis && body[i].sampleAnalysis[0].type) ? body[i].sampleAnalysis.map(function (elem) {
+                        console.log("got" + JSON.stringify(body[i]));
+                        console.log("try" + JSON.stringify(elem.type));
+                        console.log("try" + JSON.stringify(elem));
                         return elem.type.name;
                     }).join(", ") : null;
 
@@ -796,7 +800,7 @@ app.post('/sample', function (req, res) {
             logger.info('q: ' + JSON.stringify(query));
             logger.info('b: ' + JSON.stringify(body));
             logger.info('o: ' + JSON.stringify(options));
-            logger.info('upsertx successful ');
+            logger.info('upsert  successful ');
             var status = 201;
 
             var _id = '';

@@ -239,7 +239,6 @@ controller('SearchController', ['$q', '$scope', 'catsAPIservice', 'state', '$mod
 
     /* Look for updates on artwork */
     $scope.updateArtworkClicked = function(sampleArtworkId) {
-        console.log("into update");
         catsAPIservice.readDiff(sampleArtworkId).success(function (response) {
             console.log("into readAW");
             var firstObj = response;

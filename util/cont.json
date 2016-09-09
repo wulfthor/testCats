@@ -1,7 +1,7 @@
 {
   "responseHeader":{
     "status":0,
-    "QTime":7,
+    "QTime":2,
     "params":{
       "indent":"true",
       "q":"id:KMSsp587",
@@ -16,9 +16,9 @@
         "artists_data":"Jan Steen",
         "prod_technique":"Oil on canvas",
         "externalurl":"http://cspic.smk.dk/globus/xspjnpwd/img0027.jpg",
-        "object_production_date_earliest":"1671-01-01T00:00:00Z",
-        "title_first":"David hyldes efter sejren over Goliat og filistrene",
+        "object_production_date_earliest":"1671-12-01T00:00:00Z",
+        "title_first":"David død efter sejren over Goliat og filistrene",
         "csid":"7cf3a4d5-95e2-4499-a412-edac64c7d65c",
         "artists_natio":"Dutch",
-        "_version_":1484397155869261824}]
+        "_version_":1510557547008884736}]
   }}
